@@ -10,6 +10,7 @@ var postcss = require('gulp-postcss');
 var postcssOpacity = require('postcss-opacity');
 var postcssFilterGradient = require('postcss-filter-gradient');
 var autoprefixer = require('autoprefixer');
+var htmlmin = require('gulp-htmlmin');
 
 // Product Component JavaScript
 var productJS = require('./libs/files/product-component').JS;
@@ -41,6 +42,14 @@ gulp.task('copy', function () {
             base: './src/shared/'
         })
         .pipe(gulp.dest(distPath));
+});
+
+// Minify HTML
+gulp.task('htmlMinify', function() {
+  return gulp.src('views/product-component.html')
+    .pipe(htmlmin({collapseWhitespace: true}))
+    .pipe($.rename({suffix: '.min'}))
+    .pipe(gulp.dest('views'))
 });
 
 // Compile Sass
@@ -175,6 +184,7 @@ gulp.task('lint', function () {
 gulp.task('build', function (done) {
     runSequence([
         'copy',
+        'htmlMinify',
         'sass',
         'concatJS'
     ], done);
