@@ -30,7 +30,7 @@
     }
 
     [id^="tab"]:checked + label {
-        background: $product-white;
+        background: $product-light-gray;
         box-shadow: $product-tabs-top-shadow;
     }
 }
@@ -39,6 +39,7 @@
 #tab2:checked ~ #content2 {
     display: block;
     padding: 18px;
+    background: $product-light-gray;
     border-bottom: $product-tabs-border-bottom-content;
 }
 
