@@ -1,0 +1,30 @@
+/* Questions and Answers */
+
+.questions-list {
+    clear: both;
+}
+
+.questions-list li{
+    margin-bottom: 25px;
+}
+
+.questions-list .question{
+    background: $product-light-gray;
+    padding: 5px 2px;
+}
+
+.questions-list .see-more{
+    text-align: center;
+}
+
+.questions-list .question .content{
+    padding-left: 25px;
+}
+
+.questions-list .question .answer-content{
+    font-style: italic;
+}
+
+.questions-list .question label{
+    display: none;
+}
