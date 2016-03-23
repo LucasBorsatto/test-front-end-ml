@@ -2,29 +2,26 @@
 
 .questions-list {
     clear: both;
-}
+    li {
+        margin-bottom: 25px;
+    }
 
-.questions-list li{
-    margin-bottom: 25px;
-}
+    .question {
+        background: $product-gray;
+        padding: 5px 2px;
+        border-radius: 3px;
+        .content{
+            padding-left: 25px;
+        }
+        .answer-content{
+            font-style: italic;
+        }
+        label {
+            display: none;
+        }
+    }
 
-.questions-list .question{
-    background: $product-light-gray;
-    padding: 5px 2px;
-}
-
-.questions-list .see-more{
-    text-align: center;
-}
-
-.questions-list .question .content{
-    padding-left: 25px;
-}
-
-.questions-list .question .answer-content{
-    font-style: italic;
-}
-
-.questions-list .question label{
-    display: none;
+    .see-more{
+        text-align: center;
+    }
 }
