@@ -11,11 +11,8 @@ var postcssOpacity = require('postcss-opacity');
 var postcssFilterGradient = require('postcss-filter-gradient');
 var autoprefixer = require('autoprefixer');
 
-// UI JavaScript
-var uiJS = require('./libs/files/ui').JS;
-
-// Mobile JavaScript
-var mobileJS = require('./libs/files/mobile').JS;
+// Product Component JavaScript
+var productJS = require('./libs/files/product-component').JS;
 
 // Package data
 var pkg = require('./package.json');
@@ -48,32 +45,11 @@ gulp.task('copy', function () {
 
 // Compile Sass
 gulp.task('sass', [
-    'sass:ui',
-    'sass:mobile'
+    'sass:product-component'
 ]);
 
-gulp.task('sass:ui', function () {
-    return gulp.src('src/ui/styles/ui-theme.scss')
-        .pipe($.sourcemaps.init())
-        .pipe($.sass({
-            outputStyle: 'expanded' // nested, compact, compressed, expanded
-        }))
-        .pipe(postcss([
-            postcssFilterGradient,
-            autoprefixer({'browsers': ['last 5 versions', '> 1%']}),
-            postcssOpacity
-        ]))
-        .pipe($.rename('chico.css'))
-        .pipe($.wrapper({
-            header: banner.full
-        }))
-        .pipe($.sourcemaps.write('.'))
-        .pipe(gulp.dest(path.join(distPath, 'ui')))
-        .pipe(browserSync.stream());
-});
-
-gulp.task('sass:mobile', function () {
-    return gulp.src('src/mobile/styles/mobile-theme.scss')
+gulp.task('sass:product-component', function () {
+    return gulp.src('src/product-component/styles/product-component-theme.scss')
         .pipe($.sourcemaps.init())
         .pipe($.sass({
             outputStyle: 'expanded' // nested, compact, compressed, expanded
@@ -81,12 +57,12 @@ gulp.task('sass:mobile', function () {
         .pipe(postcss([
             autoprefixer({'browsers': ['last 5 versions', 'android >= 2.1', '> 1%']})
         ]))
-        .pipe($.rename('chico.css'))
+        .pipe($.rename('base.css'))
         .pipe($.wrapper({
             header: banner.full
         }))
         .pipe($.sourcemaps.write('.'))
-        .pipe(gulp.dest(path.join(distPath, 'mobile')))
+        .pipe(gulp.dest(path.join(distPath, 'product-component')))
         .pipe(browserSync.stream());
 });
 
@@ -100,49 +76,32 @@ gulp.task('minifyCSS', function() {
 
 // Concatenate and copy Chico JS
 gulp.task('concatJS', [
-    'concatJS:ui',
-    'concatJS:mobile'
+    'concatJS:product-component'
 ]);
 
-gulp.task('concatJS:ui', function() {
+gulp.task('concatJS:product-component', function() {
     return streamqueue({ objectMode: true },
-        gulp.src(uiJS.core).pipe($.concat('core.js')).pipe($.wrapper({
+        gulp.src(productJS.core).pipe($.concat('core.js')).pipe($.wrapper({
             header: "\n(function (window) {\n\t'use strict';\n\n",
             footer: '\n\tch.version = \'' + pkg.version + '\';\n\twindow.ch = ch;\n}(this));'
         })),
-        gulp.src(uiJS.abilities.concat(uiJS.components))
+        gulp.src(productJS.abilities.concat(productJS.components))
     )
-        .pipe($.concat('chico.js'))
+        .pipe($.concat('base.js'))
         .pipe($.wrapper({
             header: banner.full
         }))
-        .pipe(gulp.dest(path.join(distPath, 'ui')));
-});
-
-gulp.task('concatJS:mobile', function() {
-    return streamqueue({ objectMode: true },
-        gulp.src(mobileJS.core).pipe($.concat('core.js')).pipe($.wrapper({
-            header: "\n(function (window) {\n\t'use strict';\n\n",
-            footer: '\n\tch.version = \'' + pkg.version + '\';\n\twindow.ch = ch;\n}(this));'
-        })),
-        gulp.src(mobileJS.abilities.concat(mobileJS.components))
-    )
-        .pipe($.concat('chico.js'))
-        .pipe($.wrapper({
-            header: banner.full
-        }))
-        .pipe(gulp.dest(path.join(distPath, 'mobile')));
+        .pipe(gulp.dest(path.join(distPath, 'product-component')));
 });
 
 // Minify the JS
 gulp.task('minifyJS', [
-    'minifyJS:ui',
-    'minifyJS:mobile'
+    'minifyJS:product-component'
 ]);
 
-// UI JavaScript
-gulp.task('minifyJS:ui', function () {
-    return gulp.src(path.join(distPath, 'ui/chico.js'))
+// Product Component JavaScript
+gulp.task('minifyJS:product-component', function () {
+    return gulp.src(path.join(distPath, 'product-component/base.js'))
         .pipe($.uglify({
             beautify: true,
             mangle: false
@@ -153,30 +112,14 @@ gulp.task('minifyJS:ui', function () {
             header: banner.min
         }))
         .pipe($.rename({suffix: '.min'}))
-        .pipe(gulp.dest(path.join(distPath, 'ui')));
-});
-
-// Mobile JavaScript
-gulp.task('minifyJS:mobile', function () {
-    return gulp.src(path.join(distPath, 'mobile/chico.js'))
-        .pipe($.uglify({
-            beautify: true,
-            mangle: false
-        }).on('error', function(e) {
-            console.log(e);
-        }))
-        .pipe($.wrapper({
-            header: banner.min
-        }))
-        .pipe($.rename({suffix: '.min'}))
-        .pipe(gulp.dest(path.join(distPath, 'mobile')));
+        .pipe(gulp.dest(path.join(distPath, 'product-component')));
 });
 
 // Start a BrowserSync server, which you can view at http://localhost:3040
 gulp.task('browser-sync', ['build'], function () {
     browserSync.init({
         port: 3040,
-        startPath: '/ui.html',
+        startPath: '/product-component.html',
         server: {
             baseDir: [
                 // base path for views and demo assets
@@ -190,12 +133,9 @@ gulp.task('browser-sync', ['build'], function () {
 
                     switch (req.url) {
                         case '/':
-                        case '/ui':
-                            redirectTo = '/ui.html';
-                            break;
-                        case '/m':
-                        case '/mobile':
-                            redirectTo = '/mobile.html';
+                        case '/product':
+                        case '/product-component':
+                            redirectTo = '/product-component.html';
                             break;
                     }
 
@@ -217,8 +157,7 @@ gulp.task('browser-sync', ['build'], function () {
         }
     });
 
-    gulp.watch(['src/shared/**/*.js', 'src/ui/**/*.js'], ['concatJS:ui']);
-    gulp.watch(['src/shared/**/*.js', 'src/mobile/**/*.js'], ['concatJS:mobile']);
+    gulp.watch(['src/shared/**/*.js', 'src/product-component/**/*.js'], ['concatJS:product-component']);
     gulp.watch('dist/**/*.js').on('change', reload);
     gulp.watch('src/views/*.html').on('change', reload);
     gulp.watch('src/**/styles/**/*.scss', ['sass']);
