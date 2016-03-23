@@ -46,10 +46,10 @@ gulp.task('copy', function () {
 
 // Minify HTML
 gulp.task('htmlMinify', function() {
-  return gulp.src('views/product-component.html')
+  return gulp.src('views/*.html')
     .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe($.rename({suffix: '.min'}))
-    .pipe(gulp.dest('views'))
+    .pipe($.rename('index.html'))
+    .pipe(gulp.dest('./'))
 });
 
 // Compile Sass
