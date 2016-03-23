@@ -8,6 +8,13 @@
     		font-size: 40px;
     		margin-bottom: 3px;
     	}
+        .ch-price {
+            span {
+                color: #900;
+                font-size: 40px;
+                font-weight: 700
+            }
+        }
     	&.action {
     		.ownership-info {
     			margin-top: 5px;
